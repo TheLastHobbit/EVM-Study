@@ -1,0 +1,149 @@
+{
+	"compiler": {
+		"version": "0.8.22+commit.4fc1097e"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "contract IMyToken",
+						"name": "_imytoken",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "Deposit",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "WithDraw",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "deposit",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "getbalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "imytoken",
+				"outputs": [
+					{
+						"internalType": "contract IMyToken",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "withDraw",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"day5/TokenBank.sol": "TokenBank"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"day5/IMyToken.sol": {
+			"keccak256": "0xbf0a600473187eab5720e8ba157d3798d175a6e675ffd56e3c131e20bc4d64bf",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://69bf44aacf5f48a455ec76a0467426a875a4f8534f70a31a4abe2dee8136c487",
+				"dweb:/ipfs/QmeJDAeXu3M15h2CaSRRzq357iqoZtn3E7wTPshjoUbsAV"
+			]
+		},
+		"day5/TokenBank.sol": {
+			"keccak256": "0x24cd93741afd31fdc845fa56baa12da52c5e1ee1456ca2584cf92ca3f61cf617",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://267abccb5dd90f21a1bded6378a724194ccb46da96495ffdf3ea87c489716abf",
+				"dweb:/ipfs/QmZjGF8SoytH2AujnMHmqct2TPBj11YUHBLHuhC9UxSdjf"
+			]
+		}
+	},
+	"version": 1
+}
