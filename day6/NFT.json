@@ -1,0 +1,18 @@
+ {
+    "name": "My NFT",
+    "description": "This is an example NFT",
+    "image": "//ipfs.io/ipfs/Qmc5B5fyf1JVhhswvdG7DFqtyswoAPKjv4eH28Yzy5WpLK?filename=OW.png",
+    "attributes": [
+      {
+        "trait_type": "Color",
+        "value": "Blue"
+      },
+      {
+        "trait_type": "Size",
+        "value": "Medium"
+      }
+    ]
+  }
+
+  
+  
