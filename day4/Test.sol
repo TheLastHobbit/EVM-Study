@@ -33,7 +33,7 @@ contract Bank4{
         if (msg.sender!=owner)revert NotOwner();
         require(balances[msg.sender] >= _amount,"You don't have enough ether");
         payable(msg.sender).call{value: _amount}("");
-        balances[msg.sender] += _amount;
+        balances[msg.sender] -= _amount;
         emit Withdraw(address(this),msg.sender,_amount);
     }
 
