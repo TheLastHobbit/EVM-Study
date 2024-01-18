@@ -14,7 +14,14 @@ contract MyBank{
     }
 
 
-    receive() external payable { 
+    // receive() external payable { 
+    //     require(msg.value>0,"Your value must more than zero!");
+    //     _balance[msg.sender] += msg.value;
+    //     updatetopthree(msg.sender);
+    //     emit Deposit(msg.sender, msg.value);
+    // }
+
+    function deposit() external payable{
         require(msg.value>0,"Your value must more than zero!");
         _balance[msg.sender] += msg.value;
         updatetopthree(msg.sender);
@@ -25,11 +32,12 @@ contract MyBank{
     function withdraw() external{
         require(msg.sender == admin,"only admin");
         uint256 amount =address(this).balance;
-        msg.sender.call{value:amount};
+        payable(msg.sender).transfer(amount);
+        _balance[msg.sender] = amount;
         emit Withdraw(amount);
     }
 
-    function getbalance(address account) public view returns(uint256){
+    function getBalance(address account) public view returns(uint256){
         return _balance[account];
     }
 
