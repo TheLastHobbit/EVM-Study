@@ -1,0 +1,9 @@
+[submodule "day7/Manage/lib/forge-std"]
+	path = day7/Manage/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "day7/Manage/lib/openzeppelin-contracts-05"]
+	path = day7/Manage/lib/openzeppelin-contracts-05
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "day7/Manage/lib/openzeppelin-contracts"]
+	path = day7/Manage/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
