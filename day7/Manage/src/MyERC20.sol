@@ -15,6 +15,7 @@ contract MyERC20 is ERC20 {
     }
     return (size > 0);
     }
+    
 
      function transferFrom(address from, address to, uint256 value) public override returns (bool) {
         address spender = _msgSender();

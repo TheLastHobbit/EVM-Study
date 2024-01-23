@@ -1,0 +1,157 @@
+.App {
+  text-align: center;
+}
+
+#container {
+    /* width: 180vh; */
+    /* border: 4px dashed rgba(4, 4, 5, 0.1); */
+    min-height: 160px;
+    padding: 32px;
+    position: relative;
+    border-radius: 16px;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: left;
+    word-break: break-word;
+}
+
+.upload-container {
+  max-width: 600px;
+  margin: 0 auto;
+  margin-top: 50px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.upload-form label {
+  margin-top: 10px;
+}
+
+.upload-form input,
+.upload-form textarea {
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.upload-form .buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.cancel-button,
+.upload-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-button {
+  background: #ccc;
+}
+
+.upload-button {
+  background: #007bff;
+  color: white;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #333;
+  color: white;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+}
+
+.navbar-menu {
+  display: flex;
+  align-items: center;
+}
+
+.connect-wallet-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+}
+
+input#title::placeholder {
+  font-family: sans-serif; /* Replace with your desired font family */
+  font-size: 16px; /* Replace with your desired font size */
+  color: #a9a9a9; /* Replace with your desired color */
+}
+
+/* Change the placeholder font style for description textarea */
+textarea#description::placeholder {
+  font-family: sans-serif; /* Replace with your desired font family */
+  font-size: 16px; /* Replace with your desired font size */
+  color: #a9a9a9; /* Replace with your desired color */
+}
+
+.nft-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.nft-card {
+  border: 1px solid #e1e1e1;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.nft-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.nft-info {
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.nft-detail {
+  display: flex;
+  max-width: 600px;
+  margin: 0 auto;
+  margin-top: 50px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.nft-image {
+  flex: 1;
+}
+
+.nft-info {
+  flex: 1;
+  text-align: left;
+}
+
+.navbar a {
+  color: white;
+}

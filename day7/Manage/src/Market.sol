@@ -24,12 +24,13 @@ contract Market is ItokenRecieved {
     struct Order {
         address seller;
         uint256 id;
-        uint price;
+        uint256 price;
     }
 
-    event Deal(address seller, address buyer, uint256 id, uint256 price);
+    event Deal(address indexed seller, address indexed buyer, uint256 id, uint256 price);
     event changePrice(uint _id, uint _price);
     event cancelOrder(uint _id);
+    event List(address indexed seller, uint256 id, uint256 price);
 
     bytes4 internal constant MAGIC_ON_ERC721_RECEIVED = 0x150b7a02;
 
@@ -38,19 +39,31 @@ contract Market is ItokenRecieved {
         erc20 = MyERC20(_erc20);
     }
 
-    function getorderSell(uint256 _id) external returns (address) {
-        return orderofId[_id].seller;
+    function getAllOrders() external view returns (Order[] memory) {
+        return orders;
     }
 
-    function getorderPrice(uint256 _id) external returns (uint256) {
-        return orderofId[_id].price;
+    function getOrderCount() external view returns (uint256) {
+        return orders.length;
     }
 
-    function getorderId(uint256 _index) external returns (uint256) {
+    function getOrderId(uint256 _index) external view returns (uint256) {
         return orders[_index].id;
     }
 
-    function getorderIndex(uint256 _id) external returns (uint256) {
+    function getOrderBuyer(uint256 _id) external view returns (address) {
+        return orderofId[_id].seller;
+    }
+
+    function getorderSell(uint256 _id) external view returns (address) {
+        return orderofId[_id].seller;
+    }
+
+    function getorderPrice(uint256 _id) public view returns (uint256) {
+        return orderofId[_id].price;
+    }
+
+    function getorderIndex(uint256 _id) external view returns (uint256) {
         return idToOrderIndex[_id];
     }
 
@@ -142,6 +155,7 @@ contract Market is ItokenRecieved {
         orderofId[id] = order;
 
         idToOrderIndex[id] = orders.length - 1;
+        emit List(seller,id, price);
     }
 
     //  function onERC721Received(
