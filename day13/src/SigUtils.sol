@@ -8,9 +8,9 @@ contract SigUtils {
         DOMAIN_SEPARATOR = _DOMAIN_SEPARATOR;
     }
 
-    // keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
+    // bytes32 private constant APPROVE_PERMIT_TYPEHASH =keccak256("Permit(address owner,address spender,uint256 NFTid,uint256 deadline)");
     bytes32 public constant PERMIT_TYPEHASH =
-        0x6e71edae12b1b97f4d1f60370fef10105fa2faae0126114a169c64845d6126c9;
+        0xfb3e9d431a0aefe96a11d2a0c850f5eaafaf15dabad6b0027953cc6d25bfad74;
 
     struct Permit {
         address owner;

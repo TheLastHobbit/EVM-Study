@@ -10,10 +10,13 @@ import {ECDSA} from "lib/openzeppelin-contracts/contracts/utils/cryptography/ECD
 import {EIP712} from "lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol";
 import {Nonces} from "lib/openzeppelin-contracts/contracts/utils/Nonces.sol";
 
+import {console} from "forge-std/console.sol";
+
 contract MyNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable,EIP712, Nonces {
     uint256 private _nextTokenId;
 
     constructor() ERC721("MyNFT", "NFT") Ownable(msg.sender)EIP712("NFT","1") {}
+    event print(bytes32 msg);
 
     function safeMint(address to, string memory uri) public onlyOwner {
         uint256 tokenId = _nextTokenId++;
@@ -21,10 +24,8 @@ contract MyNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable,EIP712, No
         _setTokenURI(tokenId, uri);
     }
 
-     bytes32 private constant NFT_PERMIT_TYPEHASH =
-    keccak256("Permit(address owner,uint256 deadline)");
-    bytes32 private constant APPROVE_PERMIT_TYPEHASH =
-    keccak256("Permit(address owner,address spender,uint256 NFTid,uint256 deadline)");
+    bytes32 private constant NFT_PERMIT_TYPEHASH =keccak256("Permit(address owner,uint256 deadline)");
+    bytes32 private constant APPROVE_PERMIT_TYPEHASH =keccak256("Permit(address owner,address spender,uint256 NFTid,uint256 deadline)");
     
     error NFTExpiredSignature(uint ddl);
     error NFTInvalidSigner(address s,address o);
@@ -63,8 +64,11 @@ contract MyNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable,EIP712, No
         if (block.timestamp > deadline) {
             revert NFTExpiredSignature(deadline);
         }
+        // 获取
+        emit print(APPROVE_PERMIT_TYPEHASH);
 
         bytes32 structHash = keccak256(abi.encode(APPROVE_PERMIT_TYPEHASH, owner, spender, NFTid, _useNonce(owner), deadline));
+        
 
         bytes32 hash = _hashTypedDataV4(structHash);
 
@@ -110,6 +114,10 @@ contract MyNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable,EIP712, No
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
+    }
+
+     function DOMAIN_SEPARATOR() external view virtual returns (bytes32) {
+        return _domainSeparatorV4();
     }
 
     
