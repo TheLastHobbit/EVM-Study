@@ -14,6 +14,9 @@ The Gragh
 
 部署合约
 
+0x5Bf625BFBBEf752DDB5fFE8443c60d467344BD67
+Market：0x5C03138bC582ff3b6FA11aae20D650cA53858B38
+
 得地址和ABI
 
 下载命令行工具
@@ -64,10 +67,16 @@ The Gragh
 
 重新部署
 
-
+5139257
 
 添加新合约（gragh add）
 
 
 
 使用数据：http的方式。
+
+##### problems
+
+![image-20240123224731810](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20240123224731810.png)
+
+![image-20240123224739587](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20240123224739587.png)

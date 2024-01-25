@@ -3,18 +3,15 @@ pragma solidity ^0.8.20;
 import "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol";
 import "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
 import "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
-
+import "./NFT.sol";
 import "./MyERC20.sol";
 
 // import "@nomiclabs/buidler/console.sol";
 // import "truffle/console.sol";
 
 import "./ItokenRecieved.sol";
-
-
-
-contract Market is ItokenRecieved {
-    IERC721 public erc721;
+contract MyContract {
+    MyNFT public erc721;
     MyERC20 public erc20;
 
     mapping(uint256 => Order) public orderofId;
@@ -35,7 +32,7 @@ contract Market is ItokenRecieved {
     bytes4 internal constant MAGIC_ON_ERC721_RECEIVED = 0x150b7a02;
 
     constructor(address _erc721, address _erc20) {
-        erc721 = IERC721(_erc721);
+        erc721 = MyNFT(_erc721);
         erc20 = MyERC20(_erc20);
     }
 
@@ -68,7 +65,7 @@ contract Market is ItokenRecieved {
     }
 
     // 需要approve
-    function buy(uint256 _id, uint _price) external {
+    function buy(uint256 _id, uint _price) public {
         Order memory order = orderofId[_id];
         uint price = order.price;
         require(price == _price, "Market: Price mismatch");
@@ -85,9 +82,10 @@ contract Market is ItokenRecieved {
     }
 
 
-    function pemmitbuy() external{
-        
-
+   function permitbuy(address user, uint amount,uint NFTid, uint deadline, uint8 v, bytes32 r, bytes32 s) external {
+        MyNFT(erc721).NFTpermit(msg.sender, deadline, v, r, s);
+        MyNFT(erc721).Approvepermit(msg.sender, address(this),NFTid,deadline, v, r, s);
+        buy(NFTid, amount);
     }
 
     function bytesToUint(bytes32 b) public view returns (uint256) {
@@ -193,17 +191,20 @@ contract Market is ItokenRecieved {
         return tempUint;
     }
 
-    function tokenRecieve(
-        address from,
-        uint256 value,
-        uint256 _id
-    ) external override {
-         Order memory order = orderofId[_id];
-        // uint price = order.price;
-        address seller = order.seller;
-        // 这里调用函数的msg.sender是Market合约
-        IERC721(erc721).safeTransferFrom(seller, from, _id);
-        require(erc20.transfer(seller, value), "erc20 fail");
+    // function tokenRecieve(
+    //     address from,
+    //     uint256 value,
+    //     uint256 _id
+    // ) external override {
+    //      Order memory order = orderofId[_id];
+    //     // uint price = order.price;
+    //     address seller = order.seller;
+    //     // 这里调用函数的msg.sender是Market合约
+    //     IERC721(erc721).safeTransferFrom(seller, from, _id);
+    //     require(erc20.transfer(seller, value), "erc20 fail");
 
-    }
+    // }
+
+
+
 }
