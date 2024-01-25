@@ -25,7 +25,7 @@ contract MyNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable,EIP712, No
     }
 
     bytes32 private constant NFT_PERMIT_TYPEHASH =keccak256("Permit(address owner,uint256 deadline)");
-    bytes32 private constant APPROVE_PERMIT_TYPEHASH =keccak256("Permit(address owner,address spender,uint256 NFTid,uint256 deadline)");
+    bytes32 private constant APPROVE_PERMIT_TYPEHASH =keccak256("Approvepermit(address owner,address spender,uint256 NFTid,uint256 deadline)");
     
     error NFTExpiredSignature(uint ddl);
     error NFTInvalidSigner(address s,address o);
