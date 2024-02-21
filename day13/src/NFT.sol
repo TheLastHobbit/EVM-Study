@@ -69,14 +69,12 @@ contract MyNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable,EIP712, No
 
         bytes32 structHash = keccak256(abi.encode(APPROVE_PERMIT_TYPEHASH, owner, spender, NFTid, _useNonce(owner), deadline));
         
-
         bytes32 hash = _hashTypedDataV4(structHash);
 
         address signer = ECDSA.recover(hash, v, r, s);
         if (signer != owner) {
             revert NFTInvalidSigner(signer, owner);
         }
-
         _approve(spender,NFTid,owner);
     }
 

@@ -3,6 +3,9 @@ pragma solidity ^0.8.20;
 import "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol";
 import "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
 import "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
+import "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "./NFT.sol";
 import "./MyERC20.sol";
 
@@ -10,7 +13,7 @@ import "./MyERC20.sol";
 // import "truffle/console.sol";
 
 import "./ItokenRecieved.sol";
-contract MyContract {
+contract Market is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     MyNFT public erc721;
     MyERC20 public erc20;
 
@@ -31,10 +34,22 @@ contract MyContract {
 
     bytes4 internal constant MAGIC_ON_ERC721_RECEIVED = 0x150b7a02;
 
-    constructor(address _erc721, address _erc20) {
-        erc721 = MyNFT(_erc721);
+    constructor() {
+      
+    }
+
+    function initialize(address initialOwner,address _erc721, address _erc20) initializer public {
+        __Ownable_init(initialOwner);
+        __UUPSUpgradeable_init();
+         erc721 = MyNFT(_erc721);
         erc20 = MyERC20(_erc20);
     }
+
+      function _authorizeUpgrade(address newImplementation)
+        internal
+        onlyOwner
+        override{
+        }
 
     function getAllOrders() external view returns (Order[] memory) {
         return orders;

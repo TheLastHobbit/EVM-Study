@@ -1,0 +1,112 @@
+[
+    {
+      "type": "constructor",
+      "inputs": [
+        { "name": "merkleRoot_", "type": "bytes32", "internalType": "bytes32" },
+        {
+          "name": "erc721_",
+          "type": "address",
+          "internalType": "contract MyNFT"
+        },
+        { "name": "_token", "type": "address", "internalType": "address" }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "claimNFT",
+      "inputs": [
+        { "name": "account", "type": "address", "internalType": "address" },
+        { "name": "NFTid", "type": "uint256", "internalType": "uint256" },
+        {
+          "name": "merkleProof",
+          "type": "bytes32[]",
+          "internalType": "bytes32[]"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "erc721",
+      "inputs": [],
+      "outputs": [
+        { "name": "", "type": "address", "internalType": "contract MyNFT" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getEncode",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bytes", "internalType": "bytes" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "merkleRoot",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "multicall",
+      "inputs": [
+        { "name": "data", "type": "bytes[]", "internalType": "bytes[]" }
+      ],
+      "outputs": [
+        { "name": "results", "type": "bytes[]", "internalType": "bytes[]" }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "permitPrePay",
+      "inputs": [
+        { "name": "user", "type": "address", "internalType": "address" },
+        { "name": "_amount", "type": "uint256", "internalType": "uint256" },
+        { "name": "deadline", "type": "uint256", "internalType": "uint256" },
+        { "name": "v", "type": "uint8", "internalType": "uint8" },
+        { "name": "r", "type": "bytes32", "internalType": "bytes32" },
+        { "name": "s", "type": "bytes32", "internalType": "bytes32" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "token",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "event",
+      "name": "Claimed",
+      "inputs": [
+        {
+          "name": "account",
+          "type": "address",
+          "indexed": false,
+          "internalType": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "error",
+      "name": "AddressEmptyCode",
+      "inputs": [
+        { "name": "target", "type": "address", "internalType": "address" }
+      ]
+    },
+    { "type": "error", "name": "FailedInnerCall", "inputs": [] }
+  ]
