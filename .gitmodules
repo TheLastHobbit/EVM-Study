@@ -31,3 +31,9 @@
 [submodule "day2.21/lib/forge-std"]
 	path = day2.21/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "day2.23/lib/forge-std"]
+	path = day2.23/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "day2.23/lib/openzeppelin-contracts"]
+	path = day2.23/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
