@@ -17,6 +17,8 @@ import "./MyERC20.sol";
 // import "@nomiclabs/buidler/console.sol";
 // import "truffle/console.sol";
 
+import "../lib/v2-periphery/contracts/UniswapV2Router02.sol";
+
 import "./ItokenRecieved.sol";
 contract MarketV2 is Initializable, OwnableUpgradeable, UUPSUpgradeable,EIP712, Nonces {
     using ECDSA for bytes32;
@@ -26,6 +28,8 @@ contract MarketV2 is Initializable, OwnableUpgradeable, UUPSUpgradeable,EIP712, 
 
     MyNFT public erc721;
     MyERC20 public erc20;
+
+    UniswapV2Router02 public uniswapRouter;
 
     event Deal(address indexed seller, address indexed buyer, uint256 id, uint256 price);
     event verify(address indexed verifyer,uint256 id,uint256 price,bytes signature);
@@ -53,6 +57,15 @@ contract MarketV2 is Initializable, OwnableUpgradeable, UUPSUpgradeable,EIP712, 
         internal
         onlyOwner
         override{}
+
+
+    function _swap() internal {
+        // 交换逻辑
+        swapTokensForExactTokens()
+
+
+    }
+    
 
     function buy(address seller,uint256 _id, uint _price) internal {
         address buyer = msg.sender;
@@ -99,7 +112,6 @@ contract MarketV2 is Initializable, OwnableUpgradeable, UUPSUpgradeable,EIP712, 
 
         emit verify(msg.sender,price, NFTid, _signature);
     }
-
 
    function permitListbuy(address owner, uint price,uint NFTid,bytes memory _signature) external {
         permitStore(owner, NFTid, price, _signature);
