@@ -3,9 +3,6 @@ pragma solidity ^0.8.20;
 import "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol";
 import "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
 import "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
-import "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
-import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
-import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol";
 import {ECDSA} from "lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
 import {EIP712} from "lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol";
 import {Nonces} from "lib/openzeppelin-contracts/contracts/utils/Nonces.sol";
@@ -25,7 +22,7 @@ contract UniMarket is EIP712, Nonces {
     bytes32 private constant STORAGE_TYPEHASH = keccak256("Storage(address owner,uint256 price,uint256 id)");
     bytes32 private DOMAIN_SEPARATOR;
 
-    address[] public path;
+    
 
     MyNFT public erc721;
     MyERC20 public erc20;
@@ -48,21 +45,46 @@ contract UniMarket is EIP712, Nonces {
         block.chainid, // chain id
         address(this) // contract address
         ));
-       
     }
 
-    function _swap(uint amountIn,uint amountInMax,address to,uint deadline) internal {
-        // 先写死path[] 测试
-        IUniswapV2Router02(uniswapRouter).swapTokensForExactTokens(amountIn,amountInMax,path, to,deadline);
+    function _swap(address tokenIn,uint amountIn,uint amountInMax,uint deadline) internal returns (uint[] memory amounts) {
+        
+        IERC20(tokenIn).transferFrom(msg.sender,address(this),amountIn);
+        IERC20(tokenIn).approve(uniswapRouter,amountIn);
 
+        address[] memory path;
+        path[0] = tokenIn;
+        path[1] = address(erc20);
+        uint[] memory amounts;
+        amounts =  IUniswapV2Router02(uniswapRouter).swapTokensForExactTokens(amountIn,amountInMax,path,address(this),deadline);
+        return amounts;
+    }
+
+    function addLip(address tokenA,address tokenB,uint amountADesired,uint amountBDesired,uint amountAMin,uint amountBMin,uint deadline) external{
+        IERC20(tokenA).transferFrom(msg.sender,address(this),amountADesired);
+        IERC20(tokenA).approve(uniswapRouter,amountADesired);
+        IERC20(tokenB).transferFrom(msg.sender,address(this),amountADesired);
+        IERC20(tokenB).approve(uniswapRouter,amountADesired);
+        IUniswapV2Router02(uniswapRouter).addLiquidity(tokenA,tokenB,amountADesired,amountBDesired,amountAMin,amountBMin,msg.sender,deadline);
+        //to 是接收流动性token的地址
     }
     
 
-    function buy(address seller,uint256 _id, uint _price) internal {
+    function buy(address tokenIn,uint amountIn,uint amountInMax,uint deadline,address seller,uint256 _id, uint _price) public {
         address buyer = msg.sender;
         console.log("buyer:",buyer);
-        require(erc20.transferFrom(buyer, seller, _price),"erc20Transfer Fail");
+
+        uint balanceBefore = erc20.balanceOf(address(this));
+        _swap(tokenIn,_price, _price+100,block.timestamp+10);
+        // console.log("amounts:",amounts);
+
+        uint balanceAfter = erc20.balanceOf(address(this));
+
+        require(balanceAfter - balanceBefore >= _price,"swap error");
+
+        require(IERC20(erc20).transfer(seller, _price),"erc20Transfer Fail");
         console.log("transferFrom success:",_price);
+
         erc721.safeTransferFrom(seller, buyer, _id);
         console.log("safeTransferFrom success:",_id);
 

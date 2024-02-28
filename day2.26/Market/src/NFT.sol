@@ -50,8 +50,6 @@ contract MyNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable,EIP712, No
         }
     }
 
-    
-
      function Approvepermit(
         address owner,
         address spender,
