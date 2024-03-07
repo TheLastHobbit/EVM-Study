@@ -9,8 +9,9 @@ import { signNFT, signToken } from "../src/utils/signTool.js"
 import Airabi from "./contracts/AirdropNFT.json";
 import { toHex, encodePacked, keccak256 } from 'viem';
 const supabase = createClient("https://aogdarqrsnhmhxrmgqps.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFvZ2RhcnFyc25obWh4cm1ncXBzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDY1MjI3NDMsImV4cCI6MjAyMjA5ODc0M30.Q-huYLGRe_skR9CZJaMGRqj8SQqDsYU9k01fakZOCXE");
-import { setApproveForAll, mint,isApprovedForall,OwnerOf} from './utils/nft.js';
-import {ERC20approve, ERC20transfer} from './utils/token.js'
+import { setApproveForAll, mint, isApprovedForall, OwnerOf } from './utils/nft.js';
+import { ERC20approve, ERC20transfer } from './utils/token.js'
+import aggregatorV3Abi  from "./contracts/aggregatorV3Interface.json"
 
 function App() {
 
@@ -34,7 +35,8 @@ function App() {
   const [id, setid] = useState(0);
   const [NFTData, setNFTData] = useState("");
   const [MarketContract, setMarketContract] = useState();
-  const [buyer,setbuyer] = useState("");
+  const [buyer, setbuyer] = useState("");
+  const [ETHPrice, setETHPrice] = useState(0);
 
   // const initFormData = {
   //   account: '',
@@ -49,6 +51,7 @@ function App() {
   // })
 
   useEffect(() => {
+    getETHPrice();
   }, []);
 
   async function handleConnection() {
@@ -97,7 +100,7 @@ function App() {
 
   //上架不再在合约内执行，而是放在链下，并在上架时执行签名，存储在后端数据库
   async function List() {
-    const signature =await signNFT(wallet, price, id);
+    const signature = await signNFT(wallet, price, id);
     let { data } = await supabase.from('List_Sign').insert([{
       ownerAddr: wallet.address,
       id: id,
@@ -115,15 +118,15 @@ function App() {
     let { data: List_Sign, error } = await supabase
       .from('List_Sign')
       .select('*')
-      console.log("List_Sign_Data:", List_Sign);
+    console.log("List_Sign_Data:", List_Sign);
 
-    let {data:NFTOwner} = await supabase.from('List_Sign').select("ownerAddr").eq('id', id)
-    let {data:signature} = await supabase.from('List_Sign').select("sign").eq('id', id)
+    let { data: NFTOwner } = await supabase.from('List_Sign').select("ownerAddr").eq('id', id)
+    let { data: signature } = await supabase.from('List_Sign').select("sign").eq('id', id)
     let NFTOwnerString = NFTOwner[0].ownerAddr;
     let signatureString = signature[0].sign;
     console.log("NFTOwner:", NFTOwnerString);
     console.log("signature:", signatureString);
-   
+
     await MarketContract.permitListbuy(NFTOwnerString, price, id, signatureString);
 
     console.log("permitListbuy success!")
@@ -167,8 +170,21 @@ function App() {
   }
 
   async function getOwnerOf() {
-   const owner =  await OwnerOf(id);
-   console.log("No.",id,"NFTowner:", owner);
+    const owner = await OwnerOf(id);
+    console.log("No.", id, "NFTowner:", owner);
+  }
+
+  function getETHPrice() {
+    const provider = new ethers.JsonRpcProvider("https://rpc.ankr.com/eth_sepolia");
+    const addr = "0x694AA1769357215DE4FAC081bf1f309aDC325306"
+    const priceFeed = new ethers.Contract(addr, aggregatorV3Abi, provider);
+    priceFeed.latestRoundData().then((roundData) => {
+      // Do something with roundData
+      console.log("Latest Round Data", roundData);
+      
+      setETHPrice(ethers.formatUnits(roundData[1], 8));
+    })
+    
   }
 
   async function mintNFT() {
@@ -192,7 +208,9 @@ function App() {
     <>
       <div>
         <AccounHeader />
+        
         <h1>Market</h1>
+        <h1>ETH/USD:{ETHPrice}</h1>
         <button onClick={handleConnection}>Connect Wallet</button>
         <br />
         <div>Wallet Address: {wallet.address}</div>
@@ -206,9 +224,10 @@ function App() {
         <input type="number" placeholder="id" onChange={(e) => setid(e.target.value)} />
         <br />
       </div>
+      
 
       <div>
-      <input type="text" placeholder="account" onChange={(e) => setbuyer(e.target.value)} />
+        <input type="text" placeholder="account" onChange={(e) => setbuyer(e.target.value)} />
         <button onClick={TokenTransfer}>TokenTransfer</button>
         <button onClick={TokenApprove}>TokenApprove</button>
         <button onClick={isApproveForall}>isApproveForAll</button>

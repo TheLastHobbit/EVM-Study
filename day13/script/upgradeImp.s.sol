@@ -15,10 +15,10 @@ contract upgradeImp is Script{
    vm.startBroadcast();
     Options memory opts;
     opts.unsafeSkipAllChecks = true;
-    Upgrades.upgradeProxy(address(0xe6570e5A8499326Ce15E3F5641fD2B1FadE90A77),"MarketV2.sol",
-   abi.encodeCall(MarketV2.initialize, 
-   (address(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266),address(0x4FCe758EceE5aA7Fda5b1A04356Dbfa265061BE3),address(0x25bDeB03a8f9f02928Bf035730363eBdef9bdA31))
-   ),opts);
+  //   Upgrades.upgradeProxy(address(0xe6570e5A8499326Ce15E3F5641fD2B1FadE90A77),"MarketV2.sol",
+  //  abi.encodeCall(MarketV2.initialize, 
+  //  (address(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266),address(0x4FCe758EceE5aA7Fda5b1A04356Dbfa265061BE3),address(0x25bDeB03a8f9f02928Bf035730363eBdef9bdA31))
+  //  ),opts);
 
    vm.stopBroadcast();
 

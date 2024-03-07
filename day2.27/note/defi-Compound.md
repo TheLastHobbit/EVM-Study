@@ -69,10 +69,37 @@ UtilizationRate：资金利用率
 
 ![image-20240227154449701](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20240227154449701.png)
 
-
-
 #### how to borrow
 
 **Oracle Price**:资产评估价格，必须报价准确（预言机），报价时间要检验是否及时更新。
 
 ![image-20240227155021933](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20240227155021933.png)
+
+#### how to Liquidation:清算
+
+##### 超额抵押
+
+用1000的资产借出800的ETH，这时的抵押率为125%，但借出后，ETH上涨5%，这时抵押率下降到120%以下，触发清算线，则用户损失1000-840 = 160.
+
+![image-20240227155419244](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20240227155419244.png)
+
+
+
+清算套利：清算所得一定收益是给清算人的：监控清算+闪电贷 
+
+
+
+### 源码
+
+CERC20
+
+CToken
+
+
+
+![image-20240227160853117](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20240227160853117.png)
+
+
+
+
+

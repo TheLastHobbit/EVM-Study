@@ -11,6 +11,8 @@ import {EIP712} from "lib/openzeppelin-contracts/contracts/utils/cryptography/EI
 import {Nonces} from "lib/openzeppelin-contracts/contracts/utils/Nonces.sol";
 import {console} from "forge-std/console.sol";
 
+import "@openzeppelin/contracts/access/Ownable.sol";
+
 import "./NFT.sol";
 import "./MyERC20.sol";
 
@@ -19,15 +21,12 @@ import "./dex/router/interfaces/IOutswapV1Router.sol";
 
 import "./transFeeStake.sol";
 
+import "./KKERC20.sol";
+
 import "./ItokenRecieved.sol";
 
-contract MarketV2 is
-    Initializable,
-    OwnableUpgradeable,
-    UUPSUpgradeable,
-    EIP712,
-    Nonces
-{
+// MarketV2 非升级版本
+contract MarketV2 is EIP712, Nonces, Ownable {
     using ECDSA for bytes32;
     bytes32 private constant EIP712DOMAIN_TYPEHASH =
         keccak256(
@@ -38,7 +37,7 @@ contract MarketV2 is
     bytes32 private DOMAIN_SEPARATOR;
 
     MyNFT public erc721;
-    MyERC20 public erc20;
+    KKERC20 public erc20;
     address public FeeStake;
     address public WETH;
 
@@ -59,22 +58,17 @@ contract MarketV2 is
         bytes signature
     );
 
-    constructor() EIP712("Market", "1") {
-        // _disableInitializers();
-    }
-
-    function initialize(
-        address initialOwner,
+    constructor(
+        address _owner,
         address _erc721,
         address _erc20,
         address _router,
         address _FeeStake,
         address _WETH
-    ) public reinitializer(4) {
-        __Ownable_init(initialOwner);
-        __UUPSUpgradeable_init();
+    ) EIP712("Market", "1") Ownable(_owner) {
+        // _disableInitializers();
         erc721 = MyNFT(_erc721);
-        erc20 = MyERC20(_erc20);
+        erc20 = KKERC20(_erc20);
         router = _router;
         FeeStake = _FeeStake;
         WETH = _WETH;
@@ -89,10 +83,6 @@ contract MarketV2 is
         );
     }
 
-    function _authorizeUpgrade(
-        address newImplementation
-    ) internal override onlyOwner {}
-
     /**
      *
      * @param tokenIn buyer's token address
@@ -105,7 +95,7 @@ contract MarketV2 is
         uint256 amountOut,
         uint256 amountInMax,
         uint256 deadline
-    ) internal {
+    ) public returns (uint256[] memory amounts) {
         address[] memory path;
 
         if (address(tokenIn) == WETH) {
@@ -118,6 +108,8 @@ contract MarketV2 is
                 amountOut,
                 path
             );
+            console.log("amountsIn:", amountsIn[0]);
+            console.log("amountInMax:", amountInMax);
             // 如果此时的amountIn大于amountInMax，则不会交易
             require(amountsIn[0] <= amountInMax, "swap: amountInMax");
             IERC20(tokenIn).transferFrom(
@@ -171,19 +163,26 @@ contract MarketV2 is
         address seller,
         uint256 _id,
         uint _price
-    ) internal {
+    ) public {
+        
         address buyer = msg.sender;
         console.log("buyer:", buyer);
 
         if (isKK(tokenIn)) {
+            // 转账时收取手续费,存入池子
+            uint transfee = (_price * transfeeRate) / 1000;
             require(
-                erc20.transferFrom(buyer, seller, _price),
+                erc20.transferFrom(buyer,address(FeeStake), transfee),
+                "transfee Fail"
+            );
+            require(
+                erc20.transferFrom(buyer, seller, (_price * (1000 - transfeeRate)) / 1000),
                 "erc20Transfer Fail"
             );
             console.log("transferFrom success:", _price);
         } else {
             _swap(tokenIn, _price, amountInMax, block.timestamp + 100);
-            // 如果使用了swap，那么swap过后会将KK存到Market合约中，所以这里需要该为transfer。
+
             // 转账时收取手续费,存入池子
             uint transfee = (_price * transfeeRate) / 1000;
             require(
@@ -191,6 +190,7 @@ contract MarketV2 is
                 "transfee Fail"
             );
 
+            // 如果使用了swap，那么swap过后会将KK存到Market合约中，所以这里需要该为transfer。
             require(
                 erc20.transfer(seller, (_price * (1000 - transfeeRate)) / 1000),
                 "erc20Transfer Fail"
@@ -200,6 +200,8 @@ contract MarketV2 is
 
         erc721.safeTransferFrom(seller, buyer, _id);
         console.log("safeTransferFrom success:", _id);
+
+        tranFeeStakePool(FeeStake).accrueInterest_KK();
 
         emit Deal(seller, buyer, _id, _price);
     }
