@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
 pragma solidity ^0.8.20;
-import {Test, console} from "forge-std/Test.sol";
 
 import "./interface/ItimeLock.sol";
 import "./util/SafeMath.sol";
@@ -138,7 +137,6 @@ contract TimeLock is TimelockInterface {
         bytes memory callData;
         // 如果没有签名，直接调用data
         if (bytes(signature).length == 0) {
-            console.log("2222");
             callData = data;
         } else {
             // 如果有签名,将签名和data打包
@@ -147,7 +145,6 @@ contract TimeLock is TimelockInterface {
                 data
             );
         }
-        console.log("msg.sender:",msg.sender);
         // 执行提案中要执行的target合约交易
         (bool success, bytes memory returnData) = target.call{value: value}(
             callData

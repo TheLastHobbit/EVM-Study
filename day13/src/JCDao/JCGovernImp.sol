@@ -1,5 +1,4 @@
 pragma solidity ^0.8.20;
-import {Test, console} from "forge-std/Test.sol";
 
 import {GovernorEvents, GovernImpV2} from "./util/GovernTool.sol";
 import "./interface/IJCToken.sol";
@@ -41,7 +40,7 @@ contract JCGovernImp is GovernorEvents, GovernImpV2 {
         dao = _dao;
     }
 
-    //发出提议
+ 
     /**
      * @dev 提议
      * @param targets 目标合约地址
@@ -194,7 +193,6 @@ contract JCGovernImp is GovernorEvents, GovernImpV2 {
         );
         Proposal storage proposal = proposals[proposalId];
         uint eta = block.number + timelock.delay();
-        console.log("queue eta:",eta);
         for (uint i = 0; i < proposal.targets.length; i++) {
             _queueOrRevertInternal(
                 proposal.targets[i],
@@ -235,7 +233,6 @@ contract JCGovernImp is GovernorEvents, GovernImpV2 {
         proposal.executed = true;
         // 执行提案中每一个动作。
         for (uint i = 0; i < proposal.targets.length; i++) {
-             console.log("eta:",proposal.eta);
             timelock.executeTransaction(
                 proposal.targets[i],
                 proposal.values[i],
