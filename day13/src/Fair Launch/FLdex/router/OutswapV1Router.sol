@@ -10,7 +10,7 @@ import './interfaces/IRETH.sol';
 import '../libraries/OutswapV1Library.sol';
 import '../libraries/SafeMath.sol';
 
-contract OutswapV1Router2 is IOutswapV1Router {
+contract OutswapV1Router is IOutswapV1Router {
     using SafeMath for uint;
 
     address public immutable override factory;

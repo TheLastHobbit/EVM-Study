@@ -20,10 +20,12 @@ contract OutswapV1Pair is IOutswapV1Pair, OutswapV1ERC20 {
     address public factory;
     address public token0;
     address public token1;
+    address public feeto;
 
     uint112 private reserve0;           // uses single storage slot, accessible via getReserves
     uint112 private reserve1;           // uses single storage slot, accessible via getReserves
     uint32  private blockTimestampLast; // uses single storage slot, accessible via getReserves
+    uint private feeRate;
 
     uint public price0CumulativeLast;
     uint public price1CumulativeLast;
@@ -49,10 +51,12 @@ contract OutswapV1Pair is IOutswapV1Pair, OutswapV1ERC20 {
     }
 
     // called once by the factory at time of deployment
-    function initialize(address _token0, address _token1) external {
+    function initialize(address _token0, address _token1,address _feeto,uint _feeRate) external {
         require(msg.sender == factory, 'OutswapV1: FORBIDDEN'); // sufficient check
         token0 = _token0;
         token1 = _token1;
+        feeto = _feeto;
+        feeRate = _feeRate;
     }
 
 
@@ -105,6 +109,12 @@ contract OutswapV1Pair is IOutswapV1Pair, OutswapV1ERC20 {
         emit Burn(msg.sender, amount0, amount1, to);
     }
 
+    // function setFeeInfo() external{
+    //     require(msg.sender == factory, 'OutswapV1: FORBIDDEN');
+    //     feeto = _feeto;
+    //     feeRate = _feeRate;
+    // }
+
     // this low-level function should be called from a contract which performs important safety checks
     function swap(uint amount0Out, uint amount1Out, address to, bytes calldata data) external lock {
         require(amount0Out > 0 || amount1Out > 0, 'OutswapV1: INSUFFICIENT_OUTPUT_AMOUNT');
@@ -120,6 +130,10 @@ contract OutswapV1Pair is IOutswapV1Pair, OutswapV1ERC20 {
         if (amount0Out > 0) _safeTransfer(_token0, to, amount0Out); // optimistically transfer tokens
         if (amount1Out > 0) _safeTransfer(_token1, to, amount1Out); // optimistically transfer tokens
         if (data.length > 0) IOutswapV1Callee(to).OutswapV1Call(msg.sender, amount0Out, amount1Out, data);
+        uint fee0 =amount0Out.mul(feeRate)/1000;
+        uint fee1 =amount1Out.mul(feeRate)/1000;
+        IERC20(_token0).transfer(feeto,fee0);
+        IERC20(_token1).transfer(feeto,fee1);
         balance0 = IERC20(_token0).balanceOf(address(this));
         balance1 = IERC20(_token1).balanceOf(address(this));
         }

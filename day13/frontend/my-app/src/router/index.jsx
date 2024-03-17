@@ -1,5 +1,6 @@
 import { Routes, Route, Link } from "react-router-dom";
-import Home from "pages/home";
+import Home from "../pages/home";
+import Market  from "../pages/Market";
 
 const RoutesApp = () => {
     return (
@@ -9,7 +10,7 @@ const RoutesApp = () => {
         <Route path="*" element={<NoMatch />} />
       </Routes>
     );
-  };
+  }
   
   function NoMatch() {
     return (

@@ -5,9 +5,11 @@ import './interfaces/IOutswapV1Factory.sol';
 import './OutswapV1Pair.sol';
 import "forge-std/console2.sol";
 
-contract OutswapV1Factory2 is IOutswapV1Factory {
+contract OutswapV1Factory is IOutswapV1Factory {
     address public feeTo;
     address public feeToSetter;
+    uint public feeRate;
+    address public feeto;
 
     mapping(address => mapping(address => address)) public getPair;
     address[] public allPairs;
@@ -18,6 +20,12 @@ contract OutswapV1Factory2 is IOutswapV1Factory {
 
     function allPairsLength() external view returns (uint) {
         return allPairs.length;
+    }
+
+    function setFeeInfo(address _feeto,uint _feeRate)external{
+        require(msg.sender == feeToSetter, 'OutswapV1: FORBIDDEN');
+        feeto = _feeto;
+        feeRate = _feeRate;
     }
 
     function createPair(address tokenA, address tokenB) external returns (address pair) {
@@ -31,7 +39,7 @@ contract OutswapV1Factory2 is IOutswapV1Factory {
             pair := create2(0, add(bytecode, 32), mload(bytecode), salt)
         }
 
-        IOutswapV1Pair(pair).initialize(token0, token1);
+        IOutswapV1Pair(pair).initialize(token0, token1,feeto,feeRate);
         getPair[token0][token1] = pair;
         getPair[token1][token0] = pair; // populate mapping in the reverse direction
         allPairs.push(pair);
